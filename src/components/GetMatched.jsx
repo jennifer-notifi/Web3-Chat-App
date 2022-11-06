@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ChatStarted from "./ChatStart";
 
 const GetMatched = () => {
   const [addressData, setAddressData] = useState([]);
@@ -50,7 +51,7 @@ const GetMatched = () => {
   }
 
   useEffect(() => {
-    const randomMatchAddress = randomMatch();
+    const randomMatchAddress = randomMatch() || '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
     setMatchedAddress(randomMatchAddress);
   });
 
@@ -65,7 +66,7 @@ const GetMatched = () => {
           We'll match you based on your wallet interactions.
         </p>
         <div className="form-group">
-          <label>Wallet Address</label>
+          <label>Wallet Address:</label>
           <input
             type="text"
             className="form-control"
@@ -86,6 +87,7 @@ const GetMatched = () => {
         {matchedAddress ? (
           <p className="lead mb-4">Your match is: {matchedAddress}</p>
         ) : null}
+        <ChatStarted />
       </div>
     </div>
   );
