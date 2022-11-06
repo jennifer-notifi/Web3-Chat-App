@@ -2,29 +2,48 @@ import React, { useState, useEffect } from "react";
 
 const GetMatched = () => {
   const [addressData, setAddressData] = useState([]);
+  const [executionId, setExecutionId] = useState();
   const [matchedAddress, setMatchedAddress] = useState();
   const [getAddressData, setGetAddressData] = useState(false);
 
   var duneHeaders = new Headers();
   duneHeaders.append("x-dune-api-key", "UfwtCgP59CHm1mKkEd7TJVMl1m20e4gN");
 
-  async function fetchAddressData() {
+  async function fetchExecutionId() {
     const response = await fetch(
-      "https://api.dune.com/api/v1/query/1532463/execute",
+      "https://api.dune.com/api/v2/query/1532463/execute",
       {
         method: "POST",
         headers: duneHeaders,
       }
     );
     const data = await response.json();
-    setAddressData(data);
+    setExecutionId(data.execution_id);
+  }
+
+  async function fetchAddressData() {
+    const response = await fetch(
+      `https://api.dune.com/api/v2/execution/${executionId}/results`,
+      {
+        method: "GET",
+        headers: duneHeaders,
+      }
+    );
+    const data = await response.json();
+    setAddressData(data?.result?.rows);
   }
 
   useEffect(() => {
     if (getAddressData) {
-      fetchAddressData();
+      fetchExecutionId();
     }
   }, [getAddressData]);
+
+  useEffect(() => {
+    if (executionId) {
+      fetchAddressData();
+    }
+  }, [executionId]);
 
   function randomMatch() {
     return addressData[Math.floor(Math.random() * addressData.length)];
